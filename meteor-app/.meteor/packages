@@ -18,3 +18,10 @@ ecmascript              # Enable ECMAScript2015+ syntax in app code
 random
 standard-minifier-css
 standard-minifier-js
+accounts-facebook
+accounts-github
+accounts-google
+accounts-twitter
+service-configuration
+email
+accounts-password

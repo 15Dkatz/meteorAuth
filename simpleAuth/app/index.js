@@ -12,19 +12,15 @@ var {
 } = require('react-native');
 
 
-import Button from './button';
-import DDPClient from 'ddp-client';
-let ddpClient = new DDPClient({
-  // 'url': 'https://limitless-brushlands-79962.herokuapp.com/'
-  'url': 'ws://limitless-brushlands-79962.herokuapp.com/websocket'
-});
-
+import ddpClient from './ddp';
+import LoggedIn from './loggedIn';
+import LoggedOut from './loggedOut';
 
 module.exports = React.createClass({
   getInitialState() {
     return {
       connected: false,
-      posts: {}
+      signedIn: false,
     }
   },
 
@@ -34,54 +30,27 @@ module.exports = React.createClass({
       if (err) connected = false;
 
       this.setState({connected: connected});
-      this.makeSubscription();
-      this.observePosts();
+
     });
   },
 
-  makeSubscription() {
-    ddpClient.subscribe("posts", [], () => {
-      this.setState({posts: ddpClient.collections.posts});
-    })
-  },
-
-  observePosts() {
-    let observer = ddpClient.observe("posts");
-
-    console.log(observer, "observer");
-    observer.added = (id) => {
-      this.setState({posts: ddpClient.collections.posts})
-      console.log("ddpClient.collections.posts length: ", ddpClient.collections.posts);
-    }
-
-    observer.changed = (id, oldFields, clearedFields, newFields) => {
-      this.setState({posts: ddpClient.collections.posts})
-    }
-    //
-    observer.removed = (id, oldValue) => {
-      this.setState({posts: ddpClient.collections.posts})
-    }
-
-  },
-
-  handleIncrement() {
-    console.log('inc');
-    ddpClient.call('addPost');
-  },
-
-  handleDecrement() {
-    console.log('dec');
-    ddpClient.call('deletePost');
+  changedSignedIn(status = false) {
+    this.setState({signedIn: status});
   },
 
   render() {
-    let count = 10;
+    let body;
+
+    if (this.state.connected && this.state.signedIn) {
+      body = <LoggedIn changedSignedIn={this.changedSignedIn}/>
+    } else if (this.state.connected) {
+      body = <LoggedOut changedSignedIn={this.changedSignedIn} />
+    }
+
     return (
       <View style={styles.container}>
         <View style={styles.center}>
-          <Text>Posts: {Object.keys(this.state.posts).length}</Text>
-          <Button text="Increment" onPress={this.handleIncrement}/>
-          <Button text="Decrement" onPress={this.handleDecrement}/>
+          {body}
         </View>
       </View>
     )
@@ -92,7 +61,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: '#F5FCFF',
+    backgroundColor: '#F5FCFF'
   },
   center: {
     alignItems: 'center'
