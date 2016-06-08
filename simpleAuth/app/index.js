@@ -14,7 +14,10 @@ var {
 
 import Button from './button';
 import DDPClient from 'ddp-client';
-let ddpClient = new DDPClient();
+let ddpClient = new DDPClient({
+  // 'url': 'https://limitless-brushlands-79962.herokuapp.com/'
+  'url': 'ws://limitless-brushlands-79962.herokuapp.com/websocket'
+});
 
 
 module.exports = React.createClass({
