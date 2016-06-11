@@ -50,7 +50,7 @@ module.exports = React.createClass({
   },
 
   handleSignUp() {
-    console.log("attempting sign up with", this.state.email, this.state.password);
+    // console.log("attempting sign up with", this.state.email, this.state.password);
     let {email, password} = this.state;
     ddpClient.signUpWithEmail(email, password, (err, res) => {
       ddpClient.onAuthResponse(err, res);

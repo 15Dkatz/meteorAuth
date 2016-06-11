@@ -1,3 +1,8 @@
+// import Robot from './robot'
+
+// Robot.start();
+// Robot.toggleRed();
+
 Meteor.startup(function() {
   if (Posts.find().count() === 0) {
     for (i=1; i<10; i++) {
@@ -8,4 +13,8 @@ Meteor.startup(function() {
 
 Meteor.publish('posts', function() {
   return Posts.find();
-})
+});
+
+Meteor.publish('userList', function() {
+  return UserList.find();
+});

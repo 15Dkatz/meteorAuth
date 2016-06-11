@@ -2,4 +2,12 @@
   <h1>Post count: {{count}}</h1>
   <button id="increment">Increment</button>
   <button id="decrement">Decrement</button>
+  <div>
+    UserList
+    <div>
+      {{#each userList}}
+        {{email}},
+      {{/each}}
+    </div>
+  </div>
 </template>

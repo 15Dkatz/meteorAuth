@@ -5,6 +5,7 @@ let ddpClient = new DDPClient(
   // {
   //    'url': 'ws://limitless-brushlands-79962.herokuapp.com/websocket'
   // }
+  // also try IBM Bluemix with mongoLab backend
 );
 
 ddpClient.signUpWithEmail = (email, password, cb) => {
@@ -12,6 +13,7 @@ ddpClient.signUpWithEmail = (email, password, cb) => {
     email: email,
     password: password
   };
+  AsyncStorage.setItem('email', email);
   console.log("sign up with email in ddp", email, password);
   return ddpClient.call('createUser', [params], cb);
 }
@@ -32,7 +34,7 @@ ddpClient.loginWithEmail = (email, password, cb) => {
     },
     password: password
   }
-
+  AsyncStorage.setItem('email', email);
   return ddpClient.call("login", [params], cb)
 }
 
@@ -49,7 +51,12 @@ ddpClient.loginWithUsername = (username, password, cb) => {
 
 ddpClient.onAuthResponse = (err, res) => {
   if (res) {
+    console.log('authWithResponse res', res);
     let {id, token, tokenExpires} = res;
+    ddpClient.call('addToUserList', id);
+    ddpClient.call('toggleRed');
+    ddpClient.call('addToUserList');
+    // ddpClient.call(toggleFunction(true));
     AsyncStorage.setItem('userId', id.toString());
     AsyncStorage.setItem('loginToken', token.toString());
     AsyncStorage.setItem('loginTokenExpires', tokenExpires.toString());
@@ -60,7 +67,6 @@ ddpClient.onAuthResponse = (err, res) => {
 
 ddpClient.loginWithToken = (loginToken, cb) => {
   let params = {resume: loginToken};
-
   return ddpClient.call("login", [params], cb)
 }
 
